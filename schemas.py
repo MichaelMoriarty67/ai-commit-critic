@@ -10,5 +10,6 @@ class LlmCommitAnalysis(BaseModel):
     message: str
     score: int
     issue: str | None = None
-    praise: str | None = None
     suggestion: str | None = None
+    praise: str | None = None
+    vague: bool
