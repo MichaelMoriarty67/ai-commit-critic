@@ -6,6 +6,10 @@ class Commit(BaseModel):
     diff: str
 
 
+class Staged(BaseModel):
+    diffs: str
+
+
 class LlmCommitAnalysis(BaseModel):
     message: str
     score: int
@@ -13,3 +17,8 @@ class LlmCommitAnalysis(BaseModel):
     suggestion: str | None = None
     praise: str | None = None
     vague: bool
+
+
+class LlmCommitMsg(BaseModel):
+    changes: list[str]
+    message: str

@@ -1,6 +1,8 @@
-from llm import llm_analyze_commits
-from commits import get_last_n_commits_remote
-from schemas import LlmCommitAnalysis
+from llm import llm_analyze_commits, llm_create_commit_msg
+from commits import get_last_n_commits_remote, get_staged_diffs, make_commit
+from schemas import LlmCommitAnalysis, LlmCommitMsg
+
+from git import Repo
 
 from typing import List
 
@@ -47,12 +49,44 @@ def display_commit_analysis(analyses: List[LlmCommitAnalysis]) -> None:
     print()
 
 
-async def main():
-    repo_url = "https://github.com/MichaelMoriarty67/mcp-autogen.git"
-    commits = get_last_n_commits_remote(1, repo_url)
-    llm_commits_analysis = await llm_analyze_commits(commits)
+def display_suggested_commit(suggestion: LlmCommitMsg, repo: Repo) -> None:
 
-    display_commit_analysis(llm_commits_analysis)
+    print("\nAnalyzing staged changes...")
+    # print(f"({files_changed} files changed, +{additions} -{deletions} lines)\n")
+
+    print("\nChanges detected:")
+    for change in suggestion.changes:
+        print(f"-{change}")
+
+    print("\nSuggested commit message:")
+    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    print(suggestion.message)
+    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+
+    user_input = input("Press Enter to accept, or type your own message: ")
+
+    if user_input.strip():
+        commit_message = user_input
+    else:
+        commit_message = suggestion.message
+
+    make_commit(repo, commit_message)
+    print("\n✅ Committed successfully!")
+
+
+async def main():
+    # repo_url = "https://github.com/MichaelMoriarty67/mcp-autogen.git"
+    repo_path = "./"
+    repo = Repo(repo_path)
+
+    # commits = get_last_n_commits_remote(1, repo_url)
+    # llm_commits_analysis = await llm_analyze_commits(commits)
+
+    diffs = get_staged_diffs(repo)
+    llm_suggestion = llm_create_commit_msg(diffs)
+
+    # display_commit_analysis(llm_commits_analysis)
+    display_suggested_commit(llm_suggestion, repo)
 
 
 if __name__ == "__main__":
