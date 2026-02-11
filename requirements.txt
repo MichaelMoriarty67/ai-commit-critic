@@ -1,2 +1,4 @@
 GitPython
 pydantic
+openai
+python-dotenv
