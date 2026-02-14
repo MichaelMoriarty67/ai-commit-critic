@@ -1,5 +1,10 @@
 from llm import llm_analyze_commits, llm_create_commit_msg
-from commits import get_last_n_commits_remote, get_staged_diffs, make_commit
+from commits import (
+    get_last_n_commits_remote,
+    get_staged_diffs,
+    make_commit,
+    get_last_n_commits,
+)
 from schemas import LlmCommitAnalysis, LlmCommitMsg
 
 from git import Repo
@@ -80,6 +85,7 @@ async def main():
     repo = Repo(repo_path)
 
     # commits = get_last_n_commits_remote(1, repo_url)
+    # commits = get_last_n_commits(3, repo)
     # llm_commits_analysis = await llm_analyze_commits(commits)
 
     diffs = get_staged_diffs(repo)

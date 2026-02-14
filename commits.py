@@ -1,7 +1,7 @@
 import os
 import shutil
 import tempfile
-from git import Repo
+from git import Repo, NULL_TREE
 from schemas import Commit, Staged
 
 
@@ -16,8 +16,11 @@ def get_last_n_commits(n: int, repo: Repo) -> List[Commit]:
     for commit in commits:
         msg = commit.message
 
-        parent = commit.parents[0] if commit.parents else None
-        diffs = commit.diff(parent, create_patch=True)
+        diffs = None
+        if commit.parents:
+            diffs = commit.parents[0].diff(commit, create_patch=True)
+        else:
+            diffs = commit.diff(NULL_TREE, create_patch=True)
 
         diff_str = ""
         for diff in diffs:
@@ -60,4 +63,4 @@ def make_commit(repo: Repo, message: str) -> None:
 
 if __name__ == "__main__":
     repo = Repo("./")
-    print(get_staged_diffs(repo))
+    print(get_last_n_commits(1, repo))
