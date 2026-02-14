@@ -43,7 +43,7 @@ def get_last_n_commits_remote(n: int, url: str) -> List[Commit]:
 
 
 def get_staged_diffs(repo: Repo) -> Staged:
-    staged_changes = repo.index.diff(repo.head.commit, create_patch=True)
+    staged_changes = repo.head.commit.diff(create_patch=True)
 
     diff_str = ""
     for diff in staged_changes:
@@ -56,3 +56,8 @@ def get_staged_diffs(repo: Repo) -> Staged:
 
 def make_commit(repo: Repo, message: str) -> None:
     repo.index.commit(message)
+
+
+if __name__ == "__main__":
+    repo = Repo("./")
+    print(get_staged_diffs(repo))
