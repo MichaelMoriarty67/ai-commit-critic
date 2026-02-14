@@ -13,13 +13,13 @@ from commits import (
 )
 from schemas import LlmCommitAnalysis, LlmCommitMsg
 
-DEFAULT_PATH = "./"
+DEFAULT_PATH = "./"  # Path defaults to root of wherever interpreter is run
 DEFAULT_REPO = Repo(DEFAULT_PATH)
 DEFAULT_COMMITS = 3  # Dear Steele Browser team, saving tokens, 50 reqs is a lot 🥲
 
 
 async def run_cmd_line():
-    args = sys.argv[1:]  # Skip script name
+    args = sys.argv[1:]
 
     has_analyze = "--analyze" in args
     has_write = "--write" in args
@@ -38,13 +38,27 @@ async def run_cmd_line():
             url = arg.split("=", 1)[1]
             break
 
+    n = None
+    for arg in args:
+        if arg.startswith("--n="):
+            try:
+                n = int(arg.split("=", 1)[1])
+                if n < 1:
+                    raise ValueError
+            except:
+                print("Error: --n= must provide an integer greater than zero.")
+            break
+
     if url and has_write:
         print("Error: --url can only be used with --analyze")
         sys.exit(1)
 
     if has_analyze:
+        num_commits = n if n else DEFAULT_COMMITS
+
+        print(f"Analyzing last {n} commits...")
         if url:
-            commits = get_last_n_commits_remote(DEFAULT_COMMITS, url)
+            commits = get_last_n_commits_remote(num_commits, url)
             llm_commits_analysis = await llm_analyze_commits(commits)
 
             display_commit_analysis(llm_commits_analysis)

@@ -15,6 +15,6 @@
 ## Using the package (cmd line flags)
 1. `--analyze`: run git commit message analysis for selected repo. Defaults to last 3 commits of git repo in the root of the directory you run the python interpreter from.</br>
 <span style="margin-left: 2em; font-style: italic;">Optionally:</span></br>
-<span style="margin-left: 2em;">`--n`: select a number of commits to analyze</span><br>
+<span style="margin-left: 2em;">`--n=`: select a number of commits to analyze</span><br>
 <span style="margin-left: 2em;"> `--url=`: specify a remote repo to analyze</span><br>
 2. `--write`: write a git commit message for the current set of staged changes.
